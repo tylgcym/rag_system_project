@@ -1,0 +1,2 @@
+# rag_system_project
+这个仓库是CYM用于学习搭建RAG系统的开源仓库
