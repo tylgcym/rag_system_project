@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+zhipu:
+  api-key: ${ZHIPU_API_KEY:016c32778e6845e6bb767deb2aeab02b.Yk7xkcmRIqcQIH0s}
+  chat-model: glm-4
+  embedding-model: embedding-2
+  call-timeout: 60s
+  connect-timeout: 30s
+  read-timeout: 60s
+  write-timeout: 60s
+
+chroma:
+  url: http://localhost:8000
+  collection-name: rag_documents
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+app:
+  upload-dir: ./uploads
+  chunk-size: 500
+  chunk-overlap: 100
+  max-results: 5
