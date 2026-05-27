@@ -1,5 +1,7 @@
 package cn.changyumiao.com.service;
 
+import cn.changyumiao.com.config.HybridRetrievalConfig;
+import cn.changyumiao.com.config.RerankConfig;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.UserMessage;
@@ -27,15 +29,38 @@ public class RAGService {
 
     private final ZhipuAiChatModel chatModel;
     private final EmbeddingService embeddingService;
+    private final HybridRetrievalService hybridRetrievalService;
+    private final HybridRetrievalConfig hybridConfig;
+    private final RerankService rerankService;
+    private final RerankConfig rerankConfig;
 
-    public RAGService(ZhipuAiChatModel chatModel, EmbeddingService embeddingService) {
+    public RAGService(ZhipuAiChatModel chatModel,
+                      EmbeddingService embeddingService,
+                      HybridRetrievalService hybridRetrievalService,
+                      HybridRetrievalConfig hybridConfig,
+                      RerankService rerankService,
+                      RerankConfig rerankConfig) {
         this.chatModel = chatModel;
         this.embeddingService = embeddingService;
+        this.hybridRetrievalService = hybridRetrievalService;
+        this.hybridConfig = hybridConfig;
+        this.rerankService = rerankService;
+        this.rerankConfig = rerankConfig;
     }
 
     public QueryResult query(String question) {
-        log.info("RAG 查询开始: question={}", question);
-        List<EmbeddingMatch<TextSegment>> matches = embeddingService.searchRelevant(question);
+        log.info("RAG 查询开始: question={}, hybridEnabled={}", question, hybridConfig.isEnabled());
+
+        List<EmbeddingMatch<TextSegment>> matches;
+        if (hybridConfig.isEnabled()) {
+            matches = hybridRetrievalService.hybridSearch(question);
+        } else {
+            matches = embeddingService.searchRelevant(question);
+        }
+
+        if (rerankConfig.isEnabled() && !matches.isEmpty()) {
+            matches = rerankService.rerank(question, matches);
+        }
 
         if (matches.isEmpty()) {
             log.warn("未找到相关文档片段: question={}", question);

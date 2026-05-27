@@ -24,4 +24,21 @@ app:
   upload-dir: ./uploads
   chunk-size: 500
   chunk-overlap: 100
-  max-results: 5
+  max-results: 20
+  min-score: 0.5
+  hyde:
+    enabled: true
+
+  rerank:
+    enabled: true
+    top-k: 5
+    min-score: 5
+
+  hybrid:
+    enabled: true
+    bm25-results: 10
+    vector-results: 10
+    fusion-method: rrf
+    rrf-k: 60
+    alpha: 0.5
+    strict-min-score: 0.6

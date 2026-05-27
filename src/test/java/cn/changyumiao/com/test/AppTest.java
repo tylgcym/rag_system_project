@@ -28,7 +28,7 @@ class AppTest {
     void testChatQuery_01() {
         log.info("==================== RAG 对话测试开始 ====================");
 
-        String question = "请介绍一下RAG技术的主要流程";
+        String question = "讲一下常毓苗这个的实习期间的工作有哪些，交接了什么？实习期间工资多少？";
         log.info("测试问题: {}", question);
 
         RAGService.QueryResult result = ragService.query(question);
